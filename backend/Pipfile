@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 pysaml2 = "*"
 fastapi = "*"
+pydantic-settings = "*"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 
