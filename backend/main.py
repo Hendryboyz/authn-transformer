@@ -1,15 +1,11 @@
-from fastapi import Depends, FastAPI
-import logging
-from functools import lru_cache
-from typing import Annotated
-from config import Settings
+from fastapi import FastAPI
+from config import get_settings
+from routers import sso
 
-@lru_cache
-def get_settings():
-  logging.info('init and loading settings')
-  return Settings()
-
+settings = get_settings()
 app = FastAPI()
+
+app.include_router(sso.router)
 
 @app.get('/')
 def default():
@@ -18,8 +14,9 @@ def default():
   }
 
 @app.get('/health')
-def health(settings: Annotated[Settings, Depends(get_settings)]):
+def health():
   return {
     'host': settings.host,
     'port': settings.port,
+    'base': 'http://%s:%s' % (settings.host, settings.port),
   }
