@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os.path
-import pathlib
 
 from saml2 import BINDING_HTTP_ARTIFACT
 from saml2 import BINDING_HTTP_POST
@@ -25,16 +24,8 @@ else:
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
-
 def full_path(local_file):
     return os.path.join(BASEDIR, local_file)
-
-def list_metadata(metadata_dir: str = 'metadata') -> dict:
-    metadata = {}
-    for sp_metadata in os.listdir(metadata_dir):
-        name, _ = os.path.splitext(sp_metadata)
-        metadata[name] = str(pathlib.PurePath(metadata_dir, sp_metadata))
-    return metadata
 
 HOST = 'localhost'
 PORT = 8088
@@ -49,14 +40,12 @@ else:
 # HTTPS cert information
 SERVER_CERT = "pki/mycert.pem"
 SERVER_KEY = "pki/mykey.pem"
-SP_METADATA_DIR = 'metadata'
 CERT_CHAIN = ""
 SIGN_ALG = None
 DIGEST_ALG = None
 #SIGN_ALG = ds.SIG_RSA_SHA512
 #DIGEST_ALG = ds.DIGEST_SHA512
 
-print()
 
 CONFIG = {
     "entityid": "%s/idp.xml" % BASE,
@@ -123,9 +112,11 @@ CONFIG = {
         },
     },
     "debug": 1,
-    "key_file": full_path(SERVER_KEY),
-    "cert_file": full_path(SERVER_CERT),
-    "metadata": list_metadata(full_path(SP_METADATA_DIR)),
+    "key_file": full_path("pki/mykey.pem"),
+    "cert_file": full_path("pki/mycert.pem"),
+    "metadata": {
+        "local": [full_path("../sp-wsgi/sp.xml")],
+    },
     "organization": {
         "display_name": "Rolands Identiteter",
         "name": "Rolands Identiteter",
