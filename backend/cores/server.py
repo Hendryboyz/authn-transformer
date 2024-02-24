@@ -1,5 +1,5 @@
 from saml2 import server
-from config import get_settings
+from config import get_app_settings
 
 class Cache:
   def __init__(self):
@@ -9,5 +9,7 @@ class Cache:
 IDP: server.Server = None
 
 def init_idp_server():
-  IDP = server.Server('./idp_conf.py', cache=Cache())
+  app_settings = get_app_settings()
+  IDP = server.Server(app_settings.idp_config, cache=Cache())
   IDP.ticket = {}
+  return IDP

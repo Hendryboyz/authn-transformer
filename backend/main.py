@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-from config import get_settings
+from config import get_app_settings
 from routers import sso, slo
+from cores.server import init_idp_server
 
-settings = get_settings()
+settings = get_app_settings()
+init_idp_server()
 app = FastAPI()
 
 app.include_router(sso.router)
